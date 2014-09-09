@@ -5,14 +5,19 @@ use GuzzleHttp\Message\ResponseInterface;
 
 class PayoutRequestTest extends \PHPUnit_Framework_TestCase
 {
-    const URL = 'https://gate.wetestcode.com/orders/sites/37/payout';
+    // URL шлюза, с которым вы работает
+    // Значение site_id содержится в URL
+    const URL = 'https://gate.domainname.com/orders/sites/1/payout';
+    // Соль для подписи запроса
     const SALT = '1234567890';
     const SIGNATURE_HEADER = 'X-Signature';
 
+    /**
+     * Пример отправки запрос на выплату и первичной обработки ответа
+     */
     function testPayoutRequest()
     {
         $body = json_encode($this->getRequestData());
-
         $client = new Client();
 
         try {
@@ -32,6 +37,12 @@ class PayoutRequestTest extends \PHPUnit_Framework_TestCase
         $responseJson = $this->handleResponse($response);
 
         $this->assertNotNull($responseJson);
+    }
+
+    function callbackTips()
+    {
+        // json содерижтся в теле запроса
+        $request = json_decode(file_get_contents('php://input'), true);
     }
 
     private function getRequestData()
