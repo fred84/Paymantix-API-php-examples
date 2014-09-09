@@ -1,7 +1,7 @@
 <?php
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use \GuzzleHttp\Message\ResponseInterface;
+use GuzzleHttp\Message\ResponseInterface;
 
 class PayoutRequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class PayoutRequestTest extends \PHPUnit_Framework_TestCase
                 self::URL,
                 [
                     // подпись запроса передается в заголовке
-                    'headers' => [ self::SIGNATURE_HEADER => $this->getSignature($body) ],
+                    'headers' => [self::SIGNATURE_HEADER => $this->getSignature($body)],
                     'body' => $body,
                 ]
             );
@@ -57,28 +57,33 @@ class PayoutRequestTest extends \PHPUnit_Framework_TestCase
                 'customer' => [
                     'phone' => '79001001010',
                     'birthdate' => '1950-01-01',
-                    'address'=> [
+                    'address' => [
                         'address' => 'Red Square, 1',
                         'city' => 'Moscow',
                         'index' => '123456'
                     ],
-                    'name'=> [
+                    'name' => [
                         'first' => 'Ivan',
                         'last' => 'Ivanov',
                         'middle' => 'Ivanovich'
                     ],
-                    'document'=> [
-                        'type'=> 1,
-                        'id'=> '4500111111',
-                        'issue_date'=> '2007-03-01',
+                    'document' => [
+                        'type' => 1,
+                        'id' => '4500111111',
+                        'issue_date' => '2007-03-01',
                         'issued_by' => 'MVD'
                     ]
                 ]
             ];
     }
 
+    private function getSignature($body)
+    {
+        return base64_encode(sha1($body . self::SALT));
+    }
 
-    private function handleResponse(ResponseInterface $response) {
+    private function handleResponse(ResponseInterface $response)
+    {
         switch ($response->getStatusCode()) {
             // В зависимости от полученного кода вам необходимо предпринять действие, указанное в документации
             case 200:
@@ -102,15 +107,12 @@ class PayoutRequestTest extends \PHPUnit_Framework_TestCase
      * Это применимо и к формированию выплаты, и к callback
      * @param ResponseInterface $response
      */
-    private function verifySignature(ResponseInterface $response) {
+    private function verifySignature(ResponseInterface $response)
+    {
         $this->assertEquals(
             $this->getSignature((string)$response->getBody()),
             $response->getHeader(self::SIGNATURE_HEADER),
             'Incorrect signature'
         );
-    }
-
-    private function getSignature($body) {
-        return base64_encode(sha1($body . self::SALT));
     }
 }
