@@ -1,11 +1,4 @@
 {
-    "name": "paymantix/api-example",
-    "authors": [
-        {
-            "name": "Sergey Galkin",
-            "email": "support@paymantix.com"
-        }
-    ],
     "require": {
         "phpunit/phpunit": "4.2.*",
         "guzzlehttp/guzzle": "4.2.*"
